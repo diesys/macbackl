@@ -5,7 +5,7 @@
 #
 #	Created by Diego Turtulici (turingsbite@gmail.com)
 #	Bugs: https://github.com/diesys/macbackl/issues
-#	License: Free software
+#	License: GPLv3
 ###
 
 ACT_DSP=$(cat /sys/class/backlight/intel_backlight/brightness)
