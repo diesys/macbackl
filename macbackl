@@ -1,0 +1,54 @@
+#!/bin/bash
+
+### MAC(book)-BACKL(ight) (intel videocard - and some others device) brightness changer cli. Useful if in tty or with wm that hasn't an applet 
+#  it's higly suggested to use -[k/d][i/d] as keyboard shortcuts
+#
+#	Created by Diego Turtulici (turingsbite@gmail.com)
+#	Bugs: https://github.com/diesys/macbackl/issues
+#	License: Free software
+###
+
+ACT_DSP=$(cat /sys/class/backlight/intel_backlight/brightness)
+ACT_KBD=$(cat /sys/class/leds/smc\:\:kbd_backlight/brightness)
+
+case $1 in
+
+    -di)
+        echo $[ $ACT_DSP + 128 ] > /sys/class/backlight/intel_backlight/brightness;;
+
+    -dd)
+        if [ $[$ACT_DSP - 128] -ge 0 ]
+           	then
+	   	    	echo $[ $ACT_DSP - 128 ] > /sys/class/backlight/intel_backlight/brightness;
+			else
+		    	echo 100 > /sys/class/backlight/intel_backlight/brightness;
+		fi;;
+
+   	-d|--display)
+		if [ "$2" != "0" ] 
+			then
+				echo "$[(($2 * 4882) / 100) % 4883]" > /sys/class/backlight/intel_backlight/brightness;
+		fi;;
+
+
+	-ki)
+		echo $[ $ACT_KBD + 8 ] > /sys/class/leds/smc\:\:kbd_backlight/brightness;;
+
+	-kd)
+	   	if [ $[$ACT_KBD - 8] -ge 0 ] 
+	   		then
+	   			echo $[ $ACT_KBD - 8 ] > /sys/class/leds/smc\:\:kbd_backlight/brightness;
+			else
+	    		echo 0 > /sys/class/leds/smc\:\:kbd_backlight/brightness;
+	   	fi;;
+
+	-k|--keyboard)
+		echo "$[(($2 * 255) / 100) % 256]" > /sys/class/leds/smc\:\:kbd_backlight/brightness;;
+
+
+	-h|--help)
+	    echo -e "MacBook Pro (intel videocard - and some others device) brightness helper\n\t-d\tset display brightness (1-100%)\n\t-k\tset keyboard brightness (0-100%)\n\t-[d/k]i to increase\n\t-[d/k]d to dicrease\n\nCreated by Diego Turtulici (turingsbite@gmail.com)\nBug report at: http://github.com/diesys \nthis is free software\n";;
+
+	*)
+	    echo -e "Unknown option try -h or --help";;
+esac
